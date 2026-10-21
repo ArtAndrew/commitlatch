@@ -1,0 +1,2 @@
+# Optional example dependency. Core CommitLatch has no runtime dependencies.
+langgraph==1.2.16
