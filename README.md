@@ -2,71 +2,73 @@
 
 [![tests](https://github.com/ArtAndrew/commitlatch/actions/workflows/tests.yml/badge.svg)](https://github.com/ArtAndrew/commitlatch/actions/workflows/tests.yml)
 
-**Recover the result. Don't blindly repeat the action.**
+**Your agent lost the response. Should it repeat the action?**
 
-CommitLatch is a Python library for uncertain external actions. It records a
-business operation before dispatch, preserves completed results, asks an adapter
-to reconcile a lost response, and blocks retries when the outcome is unknown.
+CommitLatch records an external action before dispatch, recovers its result from
+an authoritative receipt, and blocks another dispatch when the outcome is unknown.
+A Python SDK with a SQLite ledger and no third-party runtime dependencies.
 
-**Status: experimental alpha, 0.1.0a1.** This release has a SQLite ledger and a local test
-service. PostgreSQL, Stripe, Temporal integration and managed hosting are roadmap
-items, not shipped capabilities. No production reliability or universal
-exactly-once guarantee is claimed.
+![Measured recovery outcomes: blind retry duplicates; native idempotency and receipt reconciliation succeed; unavailable lookup stays UNKNOWN.](assets/recovery-demo.gif)
 
-[Русское описание](README.ru.md) · [Guarantees](docs/GUARANTEES.md) ·
-[Adapter contract](docs/ADAPTERS.md) · [Roadmap](docs/ROADMAP.md) ·
-[Validation](docs/VALIDATION.md)
+*Paced animation of measured synthetic HTTP results, not a screen recording or
+latency benchmark. [Static image](assets/recovery-results.png) ·
+[Raw evidence](assets/http-results.json) · [Methodology](docs/HTTP_DEMO.md).*
 
-## What ships today
+## Try the failure in under a minute
 
-- A zero-runtime-dependency Python SDK with a durable SQLite action ledger.
-- Stable business keys bound to immutable operation arguments and adapter identity.
-- Cached results, receipt reconciliation and explicit `UNKNOWN` outcomes.
-- Atomic local claims and rejection of stale workers' ledger updates.
-- A CLI, a real process-crash demo and an offline HTML report.
-- 22 local tests covering recovery, concurrency and unsafe retry conditions.
-
-Built for developers wiring agents to tools with external side effects. Start
-with the adapter contract before using it with a real service. The included
-adapter is a test sink; no payment integration ships in this alpha.
-
-## The failure
-
-Your agent requests a refund. The service commits it. The worker dies before
-recording the response. Retrying the request may apply a second refund.
-
-Saving the request alone does not tell you whether the external effect happened.
-CommitLatch makes that ambiguity explicit instead of silently retrying it.
-
-## Run the crash demo
-
-Clone the repository, then run with Python 3.9 or newer. After cloning, the demo
-needs no API keys, Docker, third-party dependencies or network access:
+Python 3.9+, no API keys or Docker. After cloning, the demo only uses loopback HTTP.
 
 ```sh
 git clone https://github.com/ArtAndrew/commitlatch.git
 cd commitlatch
+PYTHONPATH=src python3 -m commitlatch http-demo
+```
+
+A test provider commits an operation, then closes the TCP connection before
+sending its response. The command asserts these outcomes:
+
+| Recovery strategy | External effects | POST requests | Outcome |
+| --- | ---: | ---: | --- |
+| Blind retry | 2 | 2 | Duplicate |
+| Same native idempotency key | 1 | 2 | Success |
+| CommitLatch + matching receipt | 1 | 1 | Success |
+| CommitLatch + unavailable lookup | 1 | 1 | UNKNOWN; repeat blocked |
+
+**Native idempotency already works when its contract covers your operation. Keep
+using it.** CommitLatch adds durable business identity, a shared local record and
+an explicit recovery decision. [When do you need it?](docs/WHEN_TO_USE.md)
+
+**Run the demo, then [tell us which provider you need next](https://github.com/ArtAndrew/commitlatch/discussions).**
+A small reproducible failure report is more useful than a generic feature request.
+
+## What is actually available
+
+**Experimental alpha, 0.1.0a2.** SQLite, process-crash and loopback HTTP fixtures,
+27 tests, an optional LangGraph node example, and CLI inspection/event playback.
+PostgreSQL, Stripe, Temporal integration and managed hosting are roadmap items.
+There is no universal exactly-once or production-readiness claim.
+
+| Start here | What it demonstrates |
+| --- | --- |
+| [HTTP response-loss demo](docs/HTTP_DEMO.md) | Four strategies, including native provider idempotency |
+| [LangGraph example](docs/LANGGRAPH.md) | Preserve one business key across repeated graph invocations; no LLM needed |
+| [Recovery guarantees](docs/GUARANTEES.md) | State transitions, late workers and trust boundaries |
+| [Adapter contract](docs/ADAPTERS.md) | What a provider must prove before a retry |
+| [Validation](docs/VALIDATION.md) | Checks actually performed and their limits |
+| [Roadmap](docs/ROADMAP.md) | Shipped work versus future work |
+
+[Русское описание](README.ru.md) · [Contribute](CONTRIBUTING.md)
+
+## Prefer a real process crash?
+
+```sh
 PYTHONPATH=src python3 -m commitlatch demo --directory demo-output
 ```
 
-Use an empty/new directory. The command refuses to overwrite an existing run.
-Open `demo-output/report.html` for the offline report, or `results.json` for the
-machine-readable results. The report and command-line interface are in English.
-
-```text
-naive        DUPLICATED  effects=2 attempts=2
-reconciled   SUCCEEDED   effects=1 attempts=1
-opaque       UNKNOWN     effects=1 attempts=1
-```
-
-These are measured outcomes of the bundled deterministic fixture, not production
-statistics. Each scenario kills a real child process with `os._exit(42)` after
-the test service commits an effect to its own database. The service intentionally
-does NOT deduplicate requests. In the opaque case, the demo's observer can count
-effects, but the adapter cannot query them and therefore cannot claim success.
-
-The naive baseline demonstrates one bug. It is not a performance or reliability
-comparison against correctly configured Temporal, Restate or DBOS.
+This separate fixture terminates a real child process with `os._exit(42)` after
+the test service commits an effect to its own database. Open `demo-output/report.html`
+for an offline report. Use a new or empty output directory. This command needs no
+listening socket. Neither fixture is a benchmark against Temporal, Restate or DBOS.
 
 ## Use the library
 
@@ -145,7 +147,8 @@ PYTHONPATH=src python3 -m unittest discover -s tests -v
 The suite exercises actual subprocess crashes, independent process contention,
 late-worker fencing, payload conflicts, uncertain results, explicit safe retry,
 read-only playback and unsafe receipt handling. GitHub Actions runs the suite and
-installation checks on Linux/macOS with Python 3.9/3.11/3.13. See the linked
+installation checks on Linux/macOS with Python 3.9/3.11/3.13, plus a separate
+LangGraph example on Python 3.12. See the linked
 [workflow runs](https://github.com/ArtAndrew/commitlatch/actions/workflows/tests.yml)
 for their current status.
 
@@ -162,7 +165,7 @@ for their current status.
   sensitive production data into this alpha. Namespace separation is naming,
   not an authentication or tenant-security mechanism.
 - The test service uses a separate SQLite transaction to model the commit gap.
-  Real network/provider semantics have not yet been tested.
+  The HTTP fixture adds real loopback sockets; production provider semantics remain untested.
 
 ## Contribute
 

@@ -9,3 +9,4 @@ dist/
 *.db-wal
 demo-output/
 .DS_Store
+http-output/
