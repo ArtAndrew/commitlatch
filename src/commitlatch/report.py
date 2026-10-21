@@ -44,7 +44,7 @@ def render_demo(data):
     ol{padding-left:20px}li{padding:8px 0}li strong{font-size:11px;overflow-wrap:anywhere}pre{white-space:pre-wrap;overflow-wrap:anywhere;color:#acbbc7;font-size:11px}
     .note{margin-top:28px;color:#adbeca;font-size:14px;border-left:3px solid #61dfc6;padding-left:18px}.note strong{color:#edf3f7}footer{margin-top:32px;color:#7f929f;font-size:12px}
     @media(max-width:850px){.grid{grid-template-columns:1fr}.description{min-height:0}main{padding:28px 20px}.tag{float:none;display:inline-block;margin-left:12px}}
-    </style></head><body><main><div class="brand">CommitLatch <span class="tag">ALPHA · 0.1.0a1</span></div>
+    </style></head><body><main><div class="brand">CommitLatch <span class="tag">ALPHA · 0.1.0a2</span></div>
     <h1>The action happened.<br>The response vanished. Now what?</h1>
     <p class="intro">Observed results after terminating a real child process between the external effect and the local acknowledgement. All operations use synthetic test data.</p>
     <div class="flow">External effect committed → worker terminated with os._exit(42) → recovery</div>

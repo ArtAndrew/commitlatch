@@ -137,7 +137,7 @@ def run_demo(directory=None):
     expected = [("DUPLICATED", 2), ("SUCCEEDED", 1), ("UNKNOWN", 1)]
     if [(item["state"], item["effects"]) for item in results] != expected:
         raise RuntimeError("Demo invariant failed; refusing to generate a success report")
-    data = {"version": "0.1.0a1", "test_only": True, "scenarios": results}
+    data = {"version": "0.1.0a2", "test_only": True, "scenarios": results}
     (root / "results.json").write_text(json.dumps(data, indent=2), encoding="utf-8")
     from .report import render_demo
     (root / "report.html").write_text(render_demo(data), encoding="utf-8")

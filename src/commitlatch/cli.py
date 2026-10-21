@@ -10,10 +10,13 @@ from .model import CommitLatchError
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description="Explicit recovery contracts for agent actions")
-    parser.add_argument("--version", action="version", version="CommitLatch 0.1.0a1")
+    from . import __version__
+    parser.add_argument("--version", action="version", version="CommitLatch " + __version__)
     commands = parser.add_subparsers(dest="command", required=True)
     demo = commands.add_parser("demo", help="Run three real process-crash scenarios with test data")
     demo.add_argument("--directory", help="New or empty output directory")
+    http_demo = commands.add_parser("http-demo", help="Compare recovery over loopback HTTP with a dropped response")
+    http_demo.add_argument("--directory", help="New or empty output directory")
     for name in ("inspect", "replay", "reconcile-demo"):
         command = commands.add_parser(name, help={
             "inspect": "Inspect one action", "replay": "Print recorded events; never execute an action",
@@ -29,6 +32,15 @@ def main(argv=None):
     internal.add_argument("scenario", choices=("naive", "reconciled", "opaque"))
     args = parser.parse_args(argv)
     try:
+        if args.command == "http-demo":
+            from .http_demo import run_http_demo
+            root, data = run_http_demo(args.directory)
+            for case in data["scenarios"]:
+                print("%-20s %-11s effects=%d posts=%d lookups=%d" % (
+                    case["scenario"], case["state"], case["effects"],
+                    case["post_requests"], case["lookups"]))
+            print("Data: " + str(root / "results.json"))
+            return 0
         if args.command == "_worker":
             from .demo import worker
             worker(args.directory, args.scenario)
