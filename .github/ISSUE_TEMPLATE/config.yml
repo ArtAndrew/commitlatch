@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Questions and demo feedback
+    url: https://github.com/ArtAndrew/commitlatch/discussions
+    about: Share a synthetic reproduction, ask a question or discuss a provider contract.

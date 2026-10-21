@@ -1,0 +1,25 @@
+name: Provider or adapter request
+description: Describe a real recovery contract that needs an adapter.
+title: '[Adapter]: '
+body:
+  - type: input
+    id: provider
+    attributes:
+      label: Provider and operation
+      placeholder: 'Provider, API endpoint and business operation'
+    validations:
+      required: true
+  - type: textarea
+    id: contract
+    attributes:
+      label: Official idempotency and receipt documentation
+      description: Link public docs. What can the provider prove after a lost response?
+    validations:
+      required: true
+  - type: textarea
+    id: need
+    attributes:
+      label: Workflow and failure scenario
+      description: Describe with synthetic examples; omit credentials and customer data.
+    validations:
+      required: true

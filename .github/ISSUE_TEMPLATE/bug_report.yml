@@ -1,0 +1,29 @@
+name: Reproducible recovery failure
+description: Report a failure with synthetic inputs and provider-side evidence.
+title: '[Bug]: '
+body:
+  - type: markdown
+    attributes:
+      value: 'Use synthetic data only. Do not include credentials, customer payloads or private provider receipts.'
+  - type: input
+    id: environment
+    attributes:
+      label: Version and environment
+      placeholder: 'CommitLatch version, Python version, OS'
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction
+      description: Include the fault location, business-key reuse and expected behavior.
+      render: python
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Observed ledger state and provider-side effect count
+      description: Explain how the provider outcome was established. An exception alone does not prove non-execution.
+    validations:
+      required: true
