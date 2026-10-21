@@ -1,0 +1,38 @@
+{
+  "test_only": true,
+  "transport": "loopback HTTP over TCP",
+  "scenarios": [
+    {
+      "scenario": "blind_retry",
+      "state": "DUPLICATED",
+      "effects": 2,
+      "post_requests": 2,
+      "lookups": 0,
+      "native_replays": 0
+    },
+    {
+      "scenario": "native_idempotency",
+      "state": "SUCCEEDED",
+      "effects": 1,
+      "post_requests": 2,
+      "lookups": 0,
+      "native_replays": 1
+    },
+    {
+      "scenario": "reconciled",
+      "state": "SUCCEEDED",
+      "effects": 1,
+      "post_requests": 1,
+      "lookups": 1,
+      "native_replays": 0
+    },
+    {
+      "scenario": "opaque",
+      "state": "UNKNOWN",
+      "effects": 1,
+      "post_requests": 1,
+      "lookups": 1,
+      "native_replays": 0
+    }
+  ]
+}
