@@ -1,5 +1,7 @@
 # CommitLatch
 
+[![tests](https://github.com/ArtAndrew/commitlatch/actions/workflows/tests.yml/badge.svg)](https://github.com/ArtAndrew/commitlatch/actions/workflows/tests.yml)
+
 **Recover the result. Don't blindly repeat the action.**
 
 CommitLatch is a Python library for uncertain external actions. It records a
@@ -38,10 +40,12 @@ CommitLatch makes that ambiguity explicit instead of silently retrying it.
 
 ## Run the crash demo
 
-From this directory, using Python 3.9 or newer. No API keys, Docker, dependencies
-or network access are required to run the source:
+Clone the repository, then run with Python 3.9 or newer. After cloning, the demo
+needs no API keys, Docker, third-party dependencies or network access:
 
 ```sh
+git clone https://github.com/ArtAndrew/commitlatch.git
+cd commitlatch
 PYTHONPATH=src python3 -m commitlatch demo --directory demo-output
 ```
 
@@ -140,8 +144,10 @@ PYTHONPATH=src python3 -m unittest discover -s tests -v
 
 The suite exercises actual subprocess crashes, independent process contention,
 late-worker fencing, payload conflicts, uncertain results, explicit safe retry,
-read-only playback and unsafe receipt handling. The CI workflow is prepared for
-Linux/macOS and Python 3.9/3.11/3.13; it has not run remotely yet.
+read-only playback and unsafe receipt handling. GitHub Actions runs the suite and
+installation checks on Linux/macOS with Python 3.9/3.11/3.13. See the linked
+[workflow runs](https://github.com/ArtAndrew/commitlatch/actions/workflows/tests.yml)
+for their current status.
 
 ## Scope and trust boundary
 

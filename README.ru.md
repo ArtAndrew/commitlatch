@@ -59,4 +59,5 @@ sandbox, интеграция с Temporal, автоматизация согла
 Следующие этапы и критерии готовности: [ROADMAP](docs/ROADMAP.md).
 Подробные гарантии: [GUARANTEES](docs/GUARANTEES.md).
 
-Лицензия: Apache-2.0. Репозиторий и пакет подготовлены локально, ещё не опубликованы.
+Лицензия: Apache-2.0. Репозиторий: https://github.com/ArtAndrew/commitlatch.
+Пакет в PyPI пока не опубликован.
