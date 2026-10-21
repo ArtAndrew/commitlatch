@@ -50,7 +50,7 @@ can obtain the same result cheaply using their existing runtime.
 ## Publication readiness
 
 - Repository: https://github.com/ArtAndrew/commitlatch. Verify PyPI name availability before publishing a package.
-- Run the prepared remote CI matrix and add package installation tests.
+- Completed: remote CI and package installation checks passed on Linux/macOS with Python 3.9/3.11/3.13. See VALIDATION.md.
 - Confirm README claims match actual adapters and deployment support.
 - Enable a private security-reporting route before public pilot recruitment.
 - Tag an experimental prerelease after checking the uploaded source and CI. No PyPI package has been published.

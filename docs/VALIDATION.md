@@ -1,4 +1,4 @@
-# Local validation — 2026-10-21
+# Validation — 2026-10-21
 
 Version: 0.1.0a1. Environment: macOS, Python 3.9.6.
 
@@ -23,7 +23,14 @@ and a repeated business key returned the stored receipt with one total test effe
 The HTML report was generated. Automated browser visual inspection was blocked
 by the browser's local-file URL policy; no visual verification is claimed.
 
-The GitHub Actions matrix is prepared but has not run remotely. Other Python
-versions and Linux are not yet verified. No live payment provider, HTTP fault
-proxy, PostgreSQL deployment, or distributed service was tested. These local
-results are not a production reliability benchmark or an exactly-once guarantee.
+## GitHub Actions
+
+[Run #1](https://github.com/ArtAndrew/commitlatch/actions/runs/39558606204)
+completed successfully for commit `2958d3917d60b55c20189795b1240d62b3ef6006`.
+All six combinations passed: ubuntu-latest and macos-latest, each with Python
+3.9, 3.11 and 3.13. Each job ran the 22 tests, installed the package, checked
+its CLI version and executed the crash demo.
+
+No live payment provider, HTTP fault proxy, PostgreSQL deployment or distributed
+service was tested. These results are not a production reliability benchmark
+or an exactly-once guarantee.
