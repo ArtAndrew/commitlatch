@@ -26,3 +26,20 @@ jobs:
           python -m pip install .
           commitlatch --version
           commitlatch demo
+          commitlatch http-demo
+  langgraph-example:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - run: python -m pip install . -r examples/requirements-langgraph.txt
+      - name: Reconcile or stop without dispatching twice
+        env:
+          LANGSMITH_TRACING: 'false'
+        run: |
+          python examples/langgraph_recovery.py
+          python examples/langgraph_recovery.py --opaque
