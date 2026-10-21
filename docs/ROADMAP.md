@@ -12,7 +12,15 @@
 
 This milestone is a tested vertical slice, not the full 4–6 week MVP.
 
-## Next: first real integration
+## Completed: alpha 0.1.0a2 launch package
+
+- Loopback HTTP response-loss fixture with a native-idempotency baseline.
+- Matching receipt recovery and explicit UNKNOWN when lookup is unavailable.
+- A deterministic LangGraph node example; no LLM or graph-checkpoint claim.
+- Reproducible GIF/static evidence, social preview, and English onboarding.
+- 27 core tests and a separate LangGraph CI job.
+
+## Next: first real provider integration
 
 1. Separate the ledger interface from SQLite-specific implementation details.
 2. Implement a PostgreSQL backend with atomic claims, ownership checks and
