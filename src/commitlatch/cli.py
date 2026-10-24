@@ -12,7 +12,8 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description="Explicit recovery contracts for agent actions")
     from . import __version__
     parser.add_argument("--version", action="version", version="CommitLatch " + __version__)
-    commands = parser.add_subparsers(dest="command", required=True)
+    commands = parser.add_subparsers(dest="command", required=True,
+                                     metavar="{demo,http-demo,inspect,replay,reconcile-demo}")
     demo = commands.add_parser("demo", help="Run three real process-crash scenarios with test data")
     demo.add_argument("--directory", help="New or empty output directory")
     http_demo = commands.add_parser("http-demo", help="Compare recovery over loopback HTTP with a dropped response")
@@ -27,7 +28,7 @@ def main(argv=None):
         if name == "reconcile-demo":
             command.add_argument("--provider-db", required=True)
             command.add_argument("--opaque", action="store_true")
-    internal = commands.add_parser("_worker", help=argparse.SUPPRESS)
+    internal = commands.add_parser("_worker")
     internal.add_argument("directory")
     internal.add_argument("scenario", choices=("naive", "reconciled", "opaque"))
     args = parser.parse_args(argv)

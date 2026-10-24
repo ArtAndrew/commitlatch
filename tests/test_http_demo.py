@@ -1,11 +1,14 @@
+import io
 import json
 import tempfile
 import unittest
 from concurrent.futures import ThreadPoolExecutor
+from contextlib import redirect_stdout
 from http.client import HTTPException
 from pathlib import Path
 from urllib.error import HTTPError, URLError
 
+from commitlatch.cli import main
 from commitlatch.http_demo import DemoHTTPAdapter, HTTPFixture, run_http_demo
 
 
@@ -63,6 +66,16 @@ class HTTPRecoveryTests(unittest.TestCase):
             self.assertEqual({result["receipt"] for result in results if result}, {1})
             self.assertEqual(provider.snapshot()["effects"], 1)
             self.assertEqual(provider.snapshot()["native_replays"], 5)
+
+
+class CLIHelpTests(unittest.TestCase):
+    def test_help_hides_internal_worker(self):
+        output = io.StringIO()
+        with redirect_stdout(output), self.assertRaises(SystemExit):
+            main(["--help"])
+        self.assertIn("http-demo", output.getvalue())
+        self.assertNotIn("_worker", output.getvalue())
+        self.assertNotIn("==SUPPRESS==", output.getvalue())
 
 
 if __name__ == "__main__":
